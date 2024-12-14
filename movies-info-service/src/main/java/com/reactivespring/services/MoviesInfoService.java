@@ -47,7 +47,7 @@ public class MoviesInfoService {
                 .flatMap(existingMovie -> {
                     // Copy properties from the incoming movieInfo to the existing movie
                     BeanUtils.copyProperties(movieInfo, existingMovie, "movieInfoId"); // Avoid copying the ID if it's
-                                                                                       // immutable
+                    // immutable
                     return movieInfoRepo.save(existingMovie);
                 })
                 .doOnSubscribe(subscription -> log.info("Attempting to update movie info for: {}", movieInfo.getName()))

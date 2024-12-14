@@ -1,6 +1,6 @@
 package com.reactivespring.exception;
 
-public class MoviesInfoServerException extends RuntimeException{
+public class MoviesInfoServerException extends RuntimeException {
     private String message;
 
 

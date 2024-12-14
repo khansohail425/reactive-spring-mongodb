@@ -11,8 +11,7 @@ import reactor.test.StepVerifier;
 import java.time.Duration;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static reactor.core.publisher.Flux.create;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 
 @WebFluxTest(controllers = FluxAndMonoEndPoint.class)

@@ -2,9 +2,7 @@ package com.reactivespring.controller;
 
 import com.reactivespring.domain.MovieInfo;
 import com.reactivespring.services.MoviesInfoService;
-
 import jakarta.validation.Valid;
-
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -46,7 +44,7 @@ public class MovieInfoController {
 
     @PutMapping("/{id}")
     public Mono<MovieInfo> updateMovieInfo(@PathVariable(name = "id") String id,
-            @RequestBody(required = false) @Valid MovieInfo movieInfo) {
+                                           @RequestBody(required = false) @Valid MovieInfo movieInfo) {
         return moviesInfoService.updateMovieInfo(id, movieInfo);
 
     }

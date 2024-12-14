@@ -29,12 +29,12 @@ class MoviesServiceApplicationTests {
     @BeforeEach
     void setUp() {
         movieInfoRepo.saveAll(List.of(
-                new MovieInfo(null, "Batman Begins", 2005, List.of("Christian Bale", "Michael Cane"),
-                        LocalDate.parse("2005-06-15")),
-                new MovieInfo(null, "The Dark Knight", 2008, List.of("Christian Bale", "HeathLedger"),
-                        LocalDate.parse("2008-07-18")),
-                new MovieInfo("abc", "Dark Knight Rises", 2012, List.of("Christian Bale", "Tom Hardy"),
-                        LocalDate.parse("2012-07-20"))))
+                        new MovieInfo(null, "Batman Begins", 2005, List.of("Christian Bale", "Michael Cane"),
+                                LocalDate.parse("2005-06-15")),
+                        new MovieInfo(null, "The Dark Knight", 2008, List.of("Christian Bale", "HeathLedger"),
+                                LocalDate.parse("2008-07-18")),
+                        new MovieInfo("abc", "Dark Knight Rises", 2012, List.of("Christian Bale", "Tom Hardy"),
+                                LocalDate.parse("2012-07-20"))))
                 .blockLast();
     }
 

@@ -20,8 +20,6 @@ public class MonoAndFluxPractice {
     }
 
 
-
-
     public static void main(String[] args) {
 //        Mono<String> mono = Mono.just("Hello");
 //        mono.map(String::toUpperCase).flatMap(MonoAndFluxPractice::flatMapMono).subscribe(System.out::println);

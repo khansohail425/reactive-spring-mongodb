@@ -11,6 +11,25 @@ import java.util.function.Function;
 
 public class FluxAndMonoGeneratorService {
 
+    public static void main(String[] args) {
+
+        FluxAndMonoGeneratorService fluxAndMonoGeneratorService = new FluxAndMonoGeneratorService();
+
+        Flux<String> namesFlux = fluxAndMonoGeneratorService.namesFlux().log();
+
+        namesFlux.subscribe((name) -> {
+            System.out.println("Name is : " + name);
+        });
+
+        Mono<String> namesMono = fluxAndMonoGeneratorService.namesMono().log();
+
+        namesMono.subscribe((name) -> {
+            System.out.println("Name is : " + name);
+        });
+
+        fluxAndMonoGeneratorService.namesFlux_flatmap_async(3).subscribe(System.out::println);
+    }
+
     public Flux<String> namesFlux() {
         var namesList = List.of("alex", "ben", "chloe");
         //return Flux.just("alex", "ben", "chloe");
@@ -25,7 +44,6 @@ public class FluxAndMonoGeneratorService {
         namesFlux.map(String::toUpperCase);
         return namesFlux;
     }
-
 
     public Flux<String> namesFlux_map(int stringLength) {
         var namesList = List.of("alex", "ben", "chloe");
@@ -67,7 +85,6 @@ public class FluxAndMonoGeneratorService {
                 .defaultIfEmpty("default");
 
     }
-
 
     /**
      * @param stringLength
@@ -125,7 +142,6 @@ public class FluxAndMonoGeneratorService {
                 .delayElement(Duration.ofSeconds(1));
     }
 
-
     public Flux<String> namesFlux_transform(int stringLength) {
 
         Function<Flux<String>, Flux<String>> filterMap = name -> name.map(String::toUpperCase)
@@ -139,7 +155,6 @@ public class FluxAndMonoGeneratorService {
         //using "map" would give the return type as Flux<Flux<String>
 
     }
-
 
     public Flux<String> namesFlux_transform_switchIfEmpty(int stringLength) {
 
@@ -157,7 +172,6 @@ public class FluxAndMonoGeneratorService {
         //using "map" would give the return type as Flux<Flux<String>
 
     }
-
 
     public Flux<String> namesFlux_transform_concatwith(int stringLength) {
         Function<Flux<String>, Flux<String>> filterMap = name -> name.map(String::toUpperCase)
@@ -182,7 +196,6 @@ public class FluxAndMonoGeneratorService {
 
     }
 
-
     public Mono<String> name_switchIfEmpty() {
 
         Mono<String> defaultMono = Mono.just("Default");
@@ -201,7 +214,6 @@ public class FluxAndMonoGeneratorService {
         return Flux.concat(abcFlux, defFlux);
 
     }
-
 
     // "A", "B", "C", "D", "E", "F"
     public Flux<String> explore_concatWith() {
@@ -355,24 +367,5 @@ public class FluxAndMonoGeneratorService {
         var charArray = name.split("");
         return Flux.fromArray(charArray)
                 .delayElements(Duration.ofMillis(delay));
-    }
-
-    public static void main(String[] args) {
-
-        FluxAndMonoGeneratorService fluxAndMonoGeneratorService = new FluxAndMonoGeneratorService();
-
-        Flux<String> namesFlux = fluxAndMonoGeneratorService.namesFlux().log();
-
-        namesFlux.subscribe((name) -> {
-            System.out.println("Name is : " + name);
-        });
-
-        Mono<String> namesMono = fluxAndMonoGeneratorService.namesMono().log();
-
-        namesMono.subscribe((name) -> {
-            System.out.println("Name is : " + name);
-        });
-
-        fluxAndMonoGeneratorService.namesFlux_flatmap_async(3).subscribe(System.out::println);
     }
 }
