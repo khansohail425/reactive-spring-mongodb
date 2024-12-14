@@ -1,0 +1,3 @@
+com/reactivespring/MoviesReviewServiceApplicationTests.class
+com/reactivespring/testcontainers/ProductDataLayerAccessIntegrationLiveTest.class
+com/reactivespring/testcontainers/AbstractBaseIntegrationTest.class

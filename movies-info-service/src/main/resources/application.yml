@@ -1,0 +1,30 @@
+spring:
+  profiles:
+    active: local
+  data:
+    mongodb:
+      uri: mongodb+srv://sohailkhan9770365:sDS9sWMicUZMKM0p@cluster0.tbzhg.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0
+      database: reactive-ms
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+    show-sql: true
+server:
+  port: 8082
+management:
+  endpoints:
+    web:
+      base-path: /_manage
+#logging:
+#  pattern:
+#    console: "%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n"
+
+---
+spring:
+  config:
+    activate:
+      on-profile: test
+  data:
+    mongodb:
+      uri: mongodb+srv://sohailkhan9770365:sDS9sWMicUZMKM0p@cluster0.tbzhg.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0
+      database: reactive-ms
