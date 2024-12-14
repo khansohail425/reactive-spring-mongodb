@@ -12,8 +12,11 @@ import reactor.core.publisher.Mono;
 @RequestMapping("api/v1/movieinfos")
 public class MovieInfoController {
 
-    @Autowired
     private MoviesInfoService moviesInfoService;
+
+    public MovieInfoController(MoviesInfoService moviesInfoService) {
+        this.moviesInfoService = moviesInfoService;
+    }
 
     @GetMapping
     public Flux<MovieInfo> getAllMovies() {
