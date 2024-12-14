@@ -26,6 +26,7 @@ public class MovieInfoController {
     }
 
     @PostMapping
+    @ResponseStatus(code = HttpStatus.CREATED)
     public Mono<MovieInfo> saveMovieInfo(@RequestBody MovieInfo movieInfo) {
         return moviesInfoService.saveMovieInfo(movieInfo);
     }

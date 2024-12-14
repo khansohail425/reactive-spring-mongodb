@@ -85,6 +85,11 @@ class MovieInfoControllerTestIT {
 
     @Test
     void testSaveMovieInfo() {
+        MovieInfo requestBody = new MovieInfo(null, "Dark Knight Rises returns",
+                2012, List.of("Christian Bale", "Tom Hardy"), LocalDate.parse("2012-07-20"));
+
+        webClient.post().uri(MOVIES_INFO_URL).bodyValue(requestBody).exchange().expectStatus().isCreated().expectBody()
+                .jsonPath("$.name").isEqualTo("Dark Knight Rises returns").jsonPath("$.movieInfoId").isNotEmpty();
 
     }
 
