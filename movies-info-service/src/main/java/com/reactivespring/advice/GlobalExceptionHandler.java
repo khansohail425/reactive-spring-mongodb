@@ -5,6 +5,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.exception.ExceptionUtils;
+import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -14,13 +15,15 @@ import org.springframework.web.server.ServerWebExchange;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Objects;
 
 @ControllerAdvice
 @Slf4j
 public class GlobalExceptionHandler {
 
+
     @ExceptionHandler(value = WebExchangeBindException.class)
-    public ResponseEntity<?> handalBadRequest(WebExchangeBindException exception, ServerWebExchange exchange) {
+    public ResponseEntity<?> handleBadRequest(WebExchangeBindException exception, ServerWebExchange exchange) {
         // Dynamically get the API path from the request
         String apiPath = exchange.getRequest().getURI().getPath();
 
@@ -28,8 +31,8 @@ public class GlobalExceptionHandler {
         String timestamp = LocalDateTime.now().toString();
 
         // Extract error messages from the exception (all field validation errors)
-        List<String> message = exception.getBindingResult().getAllErrors().stream()
-                .map(err -> err.getDefaultMessage())
+        List<String> message = exception.getBindingResult().getAllErrors().stream().map(DefaultMessageSourceResolvable::getDefaultMessage)
+                .filter(Objects::nonNull)
                 .sorted()
                 .toList();
 
