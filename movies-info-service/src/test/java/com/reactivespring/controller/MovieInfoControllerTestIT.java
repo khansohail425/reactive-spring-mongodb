@@ -32,7 +32,7 @@ class MovieInfoControllerTestIT {
     @Autowired
     WebTestClient webTestClient;
 
-    static final String MOVIES_INFO_URL = "/api/v1/movieinfos";
+    static final String MOVIES_INFO_BASE_URL = "/api/v1/movieinfos";
 
     @BeforeEach
     void setUp() {
@@ -55,14 +55,15 @@ class MovieInfoControllerTestIT {
     @Test
     void testDeleteMovieInfo() {
         String movieId = "abc";
-        String url = String.format("%s/%s", MOVIES_INFO_URL, movieId);
+        String url = String.format("%s/%s", MOVIES_INFO_BASE_URL, movieId);
         webClient.delete().uri(url).exchange().expectStatus().isNoContent();
         webClient.get().uri(url).exchange().expectStatus().is2xxSuccessful().expectBody().isEmpty();
     }
 
     @Test
     void testGetAllMovies() {
-        webClient.get().uri(MOVIES_INFO_URL).exchange().expectStatus().is2xxSuccessful().expectBodyList(MovieInfo.class)
+        webClient.get().uri(MOVIES_INFO_BASE_URL).exchange().expectStatus().is2xxSuccessful()
+                .expectBodyList(MovieInfo.class)
                 .consumeWith(expectBodyList -> {
                     List<MovieInfo> responseList = expectBodyList.getResponseBody();
                     assertNotNull(responseList);
@@ -73,7 +74,7 @@ class MovieInfoControllerTestIT {
     @Test
     void testGetMovieById() {
         String movieId = "/abc";
-        String url = String.format("%s%s", MOVIES_INFO_URL, movieId);
+        String url = String.format("%s%s", MOVIES_INFO_BASE_URL, movieId);
         webClient.get().uri(url).exchange().expectStatus().is2xxSuccessful().expectBodyList(MovieInfo.class)
                 .consumeWith(expectBodyList -> {
                     List<MovieInfo> responseList = expectBodyList.getResponseBody();
@@ -88,13 +89,22 @@ class MovieInfoControllerTestIT {
         MovieInfo requestBody = new MovieInfo(null, "Dark Knight Rises returns",
                 2012, List.of("Christian Bale", "Tom Hardy"), LocalDate.parse("2012-07-20"));
 
-        webClient.post().uri(MOVIES_INFO_URL).bodyValue(requestBody).exchange().expectStatus().isCreated().expectBody()
+        webClient.post().uri(MOVIES_INFO_BASE_URL).bodyValue(requestBody).exchange().expectStatus().isCreated()
+                .expectBody()
                 .jsonPath("$.name").isEqualTo("Dark Knight Rises returns").jsonPath("$.movieInfoId").isNotEmpty();
 
     }
 
     @Test
     void testUpdateMovieInfo() {
+        String movieId = "abc";
+        String url = String.format("%s/%s", MOVIES_INFO_BASE_URL, movieId);
+        MovieInfo requestBody = new MovieInfo("abc", "Dark Knight Rises returns updated",
+                2012, List.of("Christian Bale", "Tom Hardy"), LocalDate.parse("2012-07-25"));
+
+        webClient.put().uri(url).bodyValue(requestBody).exchange().expectStatus().is2xxSuccessful().expectBody()
+                .jsonPath("$.name").isEqualTo("Dark Knight Rises returns updated").jsonPath("$.movieInfoId")
+                .isNotEmpty().jsonPath("$.release_date", LocalDate.of(2012, 07, 25));
 
     }
 }
