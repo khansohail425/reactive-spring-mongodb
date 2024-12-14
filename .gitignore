@@ -1,11 +1,16 @@
+# Ignore specific files and directories
+
+## General Files ##
 HELP.md
 .gradle
 build/
 !gradle/wrapper/gradle-wrapper.jar
+
+# Exclude all build folders, but include the build folders under src/main/ and src/test/
 !**/src/main/**/build/
 !**/src/test/**/build/
 
-### STS ###
+### STS (Spring Tool Suite) ###
 .apt_generated
 .classpath
 .factorypath
@@ -36,3 +41,12 @@ out/
 
 ### VS Code ###
 .vscode/
+
+## macOS ##
+**/.DS_Store
+
+## Maven/Gradle build directories ##
+**/target/
+
+# Other specific build folders (uncommon) can be added here
+# Example: **/.gradle/
