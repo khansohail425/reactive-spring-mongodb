@@ -5,6 +5,7 @@ import com.reactivespring.exception.DuplicateMovieException;
 import com.reactivespring.exception.MovieNotFoundException;
 import com.reactivespring.exception.UpdateMovieException;
 import com.reactivespring.repo.MovieInfoRepo;
+import com.reactivespring.repo.MovieInfoRepoCustom;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,7 +16,9 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.core.scheduler.Schedulers;
 
+import java.time.LocalDate;
 import java.util.NoSuchElementException;
+import java.util.Objects;
 
 @Service
 @Slf4j
@@ -24,9 +27,8 @@ public class MoviesInfoService {
     @Autowired
     private MovieInfoRepo movieInfoRepo;
 
-    public Flux<MovieInfo> getAllMovies() {
-        return movieInfoRepo.findAll().log();
-    }
+    @Autowired
+    private MovieInfoRepoCustom movieInfoRepoCustom;
 
     public Mono<MovieInfo> getMovieById(String id) {
         return movieInfoRepo.findById(id).log();
@@ -45,9 +47,7 @@ public class MoviesInfoService {
 
         return movieInfoRepo.findById(id)
                 .flatMap(existingMovie -> {
-                    // Copy properties from the incoming movieInfo to the existing movie
                     BeanUtils.copyProperties(movieInfo, existingMovie, "movieInfoId"); // Avoid copying the ID if it's
-                    // immutable
                     return movieInfoRepo.save(existingMovie);
                 })
                 .doOnSubscribe(subscription -> log.info("Attempting to update movie info for: {}", movieInfo.getName()))
@@ -74,4 +74,13 @@ public class MoviesInfoService {
                 .log();
     }
 
+    public Flux<MovieInfo> filterMovies(String name, Integer year, String cast, LocalDate releaseStartDate, LocalDate releaseEndDate) {
+
+        if (Objects.isNull(releaseStartDate) && Objects.nonNull(releaseEndDate))
+            releaseStartDate = releaseEndDate;
+        else if (Objects.nonNull(releaseStartDate) && Objects.isNull(releaseEndDate))
+            releaseEndDate = releaseStartDate;
+
+        return movieInfoRepoCustom.filterMovies(name, year, cast, releaseStartDate, releaseEndDate);
+    }
 }

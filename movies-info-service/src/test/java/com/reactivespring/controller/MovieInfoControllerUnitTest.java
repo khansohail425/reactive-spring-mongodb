@@ -18,8 +18,7 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.ArgumentMatchers.isA;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.when;
 
 @WebFluxTest(controllers = MovieInfoController.class)
@@ -46,7 +45,7 @@ class MovieInfoControllerUnitTest {
         when(moviesInfoService.deleteMovieInfo(eq(movieId))).thenReturn(Mono.empty());
         when(moviesInfoService.getMovieById(eq(movieId))).thenReturn(Mono.empty());
         webTestClient.delete().uri(url).exchange().expectStatus().isNoContent();
-        webTestClient.get().uri(url).exchange().expectStatus().is2xxSuccessful().expectBody().isEmpty();
+        webTestClient.get().uri(url).exchange().expectStatus().isNotFound();
     }
 
     @Test
@@ -59,7 +58,7 @@ class MovieInfoControllerUnitTest {
                 new MovieInfo("abc", "Dark Knight Rises", 2012, List.of("Christian Bale", "Tom Hardy"),
                         LocalDate.parse("2012-07-20")));
 
-        when(moviesInfoService.getAllMovies()).thenReturn(Flux.fromIterable(movieinfos));
+        when(moviesInfoService.filterMovies(isNull(), isNull(), isNull(), isNull(), isNull())).thenReturn(Flux.fromIterable(movieinfos));
 
         webTestClient.get().uri(MOVIES_INFO_BASE_URL).exchange().expectStatus().is2xxSuccessful()
                 .expectBodyList(MovieInfo.class).consumeWith(expectBodyList -> {
@@ -121,10 +120,45 @@ class MovieInfoControllerUnitTest {
     @Test
     void GivenBlankMovieName_WhenAddMovie_ThenThrowNoBlankValidationException() {
         MovieInfo requestBody = new MovieInfo("abc", "", -2012, List.of(""), LocalDate.parse("2012-07-25"));
-        webTestClient.post().uri(MOVIES_INFO_BASE_URL).bodyValue(requestBody).exchange().expectStatus()
-                .isBadRequest().expectBody().jsonPath("$.status").isEqualTo(400).jsonPath("$.message")
-                .isArray().jsonPath("$.message[0]").isEqualTo("movieInfo.cast must be present")
+        webTestClient.post()
+                .uri(MOVIES_INFO_BASE_URL)
+                .bodyValue(requestBody).exchange().expectStatus()
+                .isBadRequest().expectBody()
+                .jsonPath("$.status").isEqualTo(400)
+                .jsonPath("$.message")
+                .isArray()
+                .jsonPath("$.message[0]").isEqualTo("movieInfo.cast must be present")
                 .jsonPath("$.message[1]").isEqualTo("movieInfo.name must be present")
                 .jsonPath("$.message[2]").isEqualTo("movieInfo.year must be a Positive Value");
     }
+
+    @Test
+    void WhenNonExistingMovie_ThenReturnNoFound() {
+        when(moviesInfoService.getMovieById(isA(String.class))).thenReturn(Mono.empty());
+        String movieId = "/abc";
+        String url = String.format("%s%s", MOVIES_INFO_BASE_URL, movieId);
+        webTestClient.get().uri(url)
+                .exchange()
+                .expectStatus().isNotFound()  // Expect 404 Not Found since the movie doesn't exist
+                .expectBodyList(MovieInfo.class) // Expect empty body
+                .consumeWith(response -> {
+                    List<MovieInfo> responseList = response.getResponseBody();
+                    assertNotNull(responseList); // Ensure the response body is not null
+                    assertEquals(0, responseList.size()); // Ensure the response body is empty
+                });
+    }
+
+    @Test
+    void WhenNonExistingMovie_ThenReturnNotFound() {
+        // Mock the service to return Mono.empty() for a non-existing movie
+        when(moviesInfoService.getMovieById(any())).thenReturn(Mono.empty());
+
+        // Prepare the movie ID and URL
+        String movieId = "/abc";
+        String url = String.format("%s%s", MOVIES_INFO_BASE_URL, movieId);
+
+        // Perform the GET request and assert the response status and body
+
+    }
+
 }

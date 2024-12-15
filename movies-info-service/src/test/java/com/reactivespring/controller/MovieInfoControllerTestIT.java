@@ -10,6 +10,7 @@ import org.springframework.boot.test.autoconfigure.web.reactive.AutoConfigureWeb
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.reactive.server.WebTestClient;
+import org.springframework.web.util.UriComponentsBuilder;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -51,7 +52,7 @@ class MovieInfoControllerTestIT {
         String movieId = "abc";
         String url = String.format("%s/%s", MOVIES_INFO_BASE_URL, movieId);
         webClient.delete().uri(url).exchange().expectStatus().isNoContent();
-        webClient.get().uri(url).exchange().expectStatus().is2xxSuccessful().expectBody().isEmpty();
+        webClient.get().uri(url).exchange().expectStatus().isNotFound();
     }
 
     @Test
@@ -101,4 +102,33 @@ class MovieInfoControllerTestIT {
                 .isNotEmpty().jsonPath("$.release_date", LocalDate.of(2012, 07, 25));
 
     }
+
+
+    @Test
+    void givenYear_whenCallGetMovies_thenReturnMatchResult() {
+        String request = UriComponentsBuilder.fromUriString(MOVIES_INFO_BASE_URL).queryParam("year", 2012).build().toUriString();
+        webClient.get().uri(request).exchange().expectStatus().is2xxSuccessful()
+                .expectBodyList(MovieInfo.class)
+                .consumeWith(expectBodyList -> {
+                    List<MovieInfo> responseList = expectBodyList.getResponseBody();
+                    assertNotNull(responseList);
+                    assertEquals(1, responseList.size());
+                    assertEquals("Dark Knight Rises", responseList.getFirst().getName());
+                });
+    }
+
+
+    @Test
+    void givenNonExitingYear_whenCallGetMovies_thenReturnEmpty() {
+        String request = UriComponentsBuilder.fromUriString(MOVIES_INFO_BASE_URL).queryParam("year", 2014).build().toUriString();
+        webClient.get().uri(request).exchange().expectStatus().isOk()
+                .expectBodyList(MovieInfo.class)
+                .consumeWith(expectBodyList -> {
+                    List<MovieInfo> responseList = expectBodyList.getResponseBody();
+                    assertNotNull(responseList);
+                    assertEquals(0, responseList.size());
+                });
+    }
+
+
 }
