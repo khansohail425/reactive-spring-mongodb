@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.reactive.AutoConfigureWebTestClient;
 import org.springframework.boot.test.autoconfigure.web.reactive.WebFluxTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.web.reactive.server.WebTestClient;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -25,7 +26,7 @@ import static org.mockito.Mockito.when;
 @AutoConfigureWebTestClient
 class MovieInfoControllerUnitTest {
 
-    static final String MOVIES_INFO_BASE_URL = "/api/v1/movieinfos";
+    static final String MOVIES_INFO_BASE_URL = "/api/v1/infos";
 
     @Autowired
     WebTestClient webTestClient;

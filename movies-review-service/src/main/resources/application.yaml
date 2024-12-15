@@ -12,21 +12,17 @@ spring:
       ddl-auto: create-drop
     show-sql: true
 server:
-  port: 8082
+  port: 8083
 management:
   endpoints:
     web:
       base-path: /_manage
-      exposure:
-        include: "*"
 #logging:
 #  pattern:
 #    console: "%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n"
 
 ---
 spring:
-  webflux:
-    base-path: /movies
   config:
     activate:
       on-profile: test

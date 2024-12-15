@@ -14,7 +14,7 @@ import java.net.URI;
 import java.time.LocalDate;
 
 @RestController()
-@RequestMapping("api/v1/movieinfos")
+@RequestMapping("api/v1/infos")
 @Validated
 public class MovieInfoController {
 

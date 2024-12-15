@@ -23,7 +23,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 @AutoConfigureWebTestClient
 class MovieInfoControllerTestIT {
 
-    static final String MOVIES_INFO_BASE_URL = "/api/v1/movieinfos";
+    static final String MOVIES_INFO_BASE_URL = "/api/v1/infos";
     @Autowired
     WebTestClient webClient;
     @Autowired
