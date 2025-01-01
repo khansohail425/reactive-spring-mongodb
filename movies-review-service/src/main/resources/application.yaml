@@ -5,7 +5,7 @@ spring:
     active: local
   data:
     mongodb:
-      uri: mongodb+srv://sohailkhan9770365:sDS9sWMicUZMKM0p@cluster0.tbzhg.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0
+      uri: ${MONGO_DB_CONNECTION_STRING}
       database: reactive-ms
   jpa:
     hibernate:
@@ -28,7 +28,7 @@ spring:
       on-profile: test
   data:
     mongodb:
-      uri: mongodb+srv://sohailkhan9770365:sDS9sWMicUZMKM0p@cluster0.tbzhg.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0
+      uri: ${MONGO_DB_CONNECTION_STRING}
       database: reactive-ms
 
 logging:
